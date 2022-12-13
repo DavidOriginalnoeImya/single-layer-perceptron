@@ -34,8 +34,9 @@ public class Perceptron {
                 rmsError += getRmsError(neuronsOutputValues, outputSamples[index], inputSamples.length);
             }
             rmsError /= inputSamples.length;
+            System.out.println(rmsError);
             ++epochNumber;
-        } while (rmsError >= eps || isWeightsChange());
+        } while (rmsError >= eps && isWeightsChange());
 
         System.out.println("Epoch number: " + epochNumber);
     }
@@ -47,7 +48,6 @@ public class Perceptron {
     private boolean isWeightsChange() {
         for (int index1 = 0; index1 < neurons.length; ++index1) {
             for (int index2 = 0; index2 < neurons[index1].getWeights().length; ++index2) {
-                System.out.println("Weights: " + neurons[index1].getWeight(index2) + " " + neuronInputWeights[index1][index2]);
                 if (Double.compare(neurons[index1].getWeight(index2), neuronInputWeights[index1][index2]) != 0) {
                     return true;
                 }
@@ -103,7 +103,7 @@ public class Perceptron {
         double[] neuronsOutputValues = new double[potentials.length];
 
         for (int index = 0; index < potentials.length; ++index) {
-            neuronsOutputValues[index] = activationFunction.getY(potentials[index], 1);
+            neuronsOutputValues[index] = activationFunction.getY(potentials[index], 0);
         }
 
         return neuronsOutputValues;
@@ -140,28 +140,32 @@ public class Perceptron {
 
     public static void main(String[] args) {
         double[][] inputSamples = {
-                {0, 0, 0}, {0, 0, 1}, {0, 1, 0},
-                 {1, 0, 0}, {1, 0, 1},
-                {1, 1, 0}, {0, 1, 1}, {1, 1, 1}
+                {0, 0, 0, 0}, {0, 0, 1, 0}, {0, 0, 1, 1},
+                {0, 1, 0, 1}, {0, 1, 1, 0}, {0, 1, 1, 1},
+                {1, 0, 0, 0}, {1, 0, 1, 0}, {1, 1, 0, 0},
+                {1, 1, 0, 1}, {1, 1, 1, 1}
         };
 
         double[][] outputSamples = {
-                {1, 1, 1}, {1, 1, 0}, {1, 0, 1},
-                 {0, 1, 1}, {0, 1, 0},
-                {0, 0, 1}, {1, 0, 0}, {0, 0, 0}
+                {1, 1, 1, 1}, {1, 1, 0, 1}, {1, 1, 0, 0},
+                {1, 0, 1, 0}, {1, 0, 0, 1}, {1, 0, 0, 0},
+                {0, 1, 1, 1}, {0, 1, 0, 1}, {0, 0, 1, 1},
+                {0, 0, 1, 0}, {0, 0, 0, 0}
         };
 
-        double[][] outputSamples1 = {
-                {1, 1, 1}, {1, 1, 0}, {1, 0, 1},
-                {0, 1, 1}, {0, 1, 0},
-                {0, 0, 1}, {1, 0, 0}, {0, 0, 0}
+        double[][] testSamples = {
+                {0, 0, 0, 0}, {0, 0, 0, 1}, {0, 0, 1, 0}, {0, 0, 1, 1},
+                {0, 1, 0, 0}, {0, 1, 0, 1}, {0, 1, 1, 0}, {0, 1, 1, 1},
+                {1, 0, 0, 0}, {1, 0, 0, 1}, {1, 0, 1, 0}, {1, 0, 1, 1},
+                {1, 1, 0, 0}, {1, 1, 0, 1}, {1, 1, 1, 0}, {1, 1, 1, 1}
         };
 
-        Perceptron perceptron = new Perceptron(3, 3, new StepFunction());
-        perceptron.learn(inputSamples, outputSamples, 0.9, 0.001);
+        Perceptron perceptron = new Perceptron(inputSamples[0].length, outputSamples[0].length, new StepFunction());
+        perceptron.learn(inputSamples, outputSamples, 0.1, 0.001);
 
-        for (double[] inputSample : outputSamples1) {
+        for (double[] inputSample : testSamples) {
             System.out.println(Arrays.toString(perceptron.getResult(inputSample)));
+            perceptron.getResult(inputSample);
         }
     }
 }

@@ -29,7 +29,7 @@ public class Neuron {
         weights = new double[inputNumber];
 
         for (int index = 0; index < inputNumber; ++index) {
-            weights[index] = Math.random() / 100000;
+            weights[index] = Math.random() / 1000;
         }
     }
 }
